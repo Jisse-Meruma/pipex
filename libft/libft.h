@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 15:05:51 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/20 14:59:54 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/01/23 13:22:44 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int			ft_isprint(int c);
 int			ft_lstsize(t_list *lst);
 int			ft_strlen(const char *s);
 int			ft_atoi(const char *str);
+int			ft_2d_arrlen(char **p_arr);
 int			ft_atoi_overflow(const char *str, int *numb);
 int			ft_memcmp(const void *s1, const void *s2, size_t n);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -47,6 +48,7 @@ char		*ft_strtrim(char const *s1, char const *set);
 char		*ft_substr(char const *s, unsigned int start, size_t len);
 char		*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char		*ft_strnstr(const char *haystack, const char *needle, size_t len);
+void		ft_2dfree(char **p_arr);
 void		ft_putnbr_fd(int n, int fd);
 void		*ft_bzero(void *s, size_t n);
 void		ft_putchar_fd(char c, int fd);

@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_2d_arrlen.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/20 20:44:35 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/23 12:57:31 by jmeruma          ###   ########.fr       */
+/*   Created: 2023/01/23 12:30:19 by jmeruma           #+#    #+#             */
+/*   Updated: 2023/01/23 12:32:08 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include <unistd.h>
 
-# include "libft.h"
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdio.h>
-
-typedef struct s_pipe
+int	ft_2d_arrlen(char **p_arr)
 {
-	char	**envp;
-	char	**commands;
-	int		commands_count;
-}	t_pipe;
+	int	i;
 
-void	clean_error(void);
-void	commands(t_pipe *pipe, char *argv[]);
-
-#endif
+	i = 0;
+	while (p_arr[i] != NULL)
+		i++;
+	return (i);
+}

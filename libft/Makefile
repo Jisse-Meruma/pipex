@@ -43,6 +43,8 @@ SRC 	:=	ft_atoi.c 		\
 			ft_atoh.c		\
 			ft_atol.c		\
 			ft_atoi_overflow.c 				\
+			ft_2d_arrlen.c					\
+			ft_2dfree.c						\
 			\
 			ft_printf/src/basetoa.c			\
 			ft_printf/src/ft_printf.c		\
