@@ -6,72 +6,53 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 22:43:22 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/23 16:02:17 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/01/25 14:14:52 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*argument_split(char *argument)
-{
-	int i;
-	char *ptr;
-
-	i = 0;
-	while (argument[i] && argument[i] != ' ')
-		i++;
-	ptr = malloc(i + 1 * sizeof(char));
-	ptr[i] = '\0';
-	ft_strlcpy(ptr, argument, i + 1);
-	return (ptr);
-}
-
-void	valid_command(t_pipe *pipe, char *path, char *argv[])
+char	**valid_command(char *path, char *argument, char *command)
 {
 	int		i;
 	int		commands;
-	char	*bin_command;
+	char	**arg_argv;
 	char	**paths;
-	char	*command;
-	
+
+	i = 0;
 	commands = 0;
+	arg_argv = ft_split(argument, ' ');
 	paths = ft_split(path, ':');
-	while (commands < pipe->commands_count)
+	while (1)
 	{
-		i = 0;
-		while (1)
-		{
-			command = ft_strjoin(paths[i], "/");
-			bin_command = argument_split(argv[commands + 2]);
-			command = ft_strjoin(command, bin_command);
-			free(bin_command);
-			if (access(command, F_OK | X_OK) == 0)
-			{
-				ft_printf("%s\n", command);
-				ft_printf("%s\n", argv[commands + 2]);
-				pipe->commands[commands] = command;
-				break;
-			}
-			free(command);
-			i++;
-			if (paths[i] == '\0')
-				clean_error();
-		}
-		commands++;
+		command = ft_strjoin(paths[i], "/");
+		command = ft_strjoin(command, arg_argv[0]);
+		if (access(command, F_OK | X_OK) == 0)
+			return (arg_argv);
+		free(command);
+		i++;
+		if (paths[i] == '\0')
+			clean_error();
 	}
 	ft_2dfree(paths);
 }
 
-void	commands(t_pipe *pipe, char *argv[])
+void	commands(char *envp[], char *argument)
 {
+	char	**arg_argv;
+	char	*command;
 	int i;
 	
-	i = ft_2d_arrlen(pipe->envp);
+	command = NULL;
+	i = ft_2d_arrlen(envp);
 	i--;
 	while (i > 0)
 	{
-		if(!ft_strncmp(pipe->envp[i], "PATH=", 5))
-			valid_command(pipe, pipe->envp[i] + 5, argv);
+		if(!ft_strncmp(envp[i], "PATH=", 5))
+		{
+			arg_argv = valid_command(envp[i] + 5, argument, command);
+			break;
+		}
 		i--;
 	}
 }
