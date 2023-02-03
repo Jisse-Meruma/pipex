@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jisse <jisse@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/26 12:49:47 by jisse            ###   ########.fr       */
+/*   Updated: 2023/01/27 16:39:56 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	pid_t	id;
 	int		pipes[2]; 
-	// 0 = read // 
+	// 0 = read //
 	// 1 = write //
 	int		fd;
 	int		counter;
@@ -34,9 +34,10 @@ int	main(int argc, char *argv[], char *envp[])
 	
 	if (argc < 4)
 		clean_error();
-	pipe(pipes);
+	
 	while (counter < argc - 3 && id != 0)
 	{
+		pipe(pipes);
 		if (id != 0)
 			id = fork();
 		i++;
@@ -61,3 +62,4 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	clean_error();
 	// pipe->commands[pipe->commands_count] = NULL;
 }
+kaas
