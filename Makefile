@@ -16,7 +16,8 @@ RM		:=	rm -rf
 
 SRC 	:=	main.c			\
 			valid_file.c    \
-			command.c
+			command.c		\
+			execute.c		\
 
 OBJ		:=	$(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 SRC		:=	$(addprefix $(SRC_DIR)/,$(SRC))

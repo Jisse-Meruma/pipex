@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/27 16:39:56 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/06 17:22:28 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,35 @@
 
 void	clean_error(void)
 {
-	ft_printf("Error\n");
+	printf("Error\n");
 	exit(-1);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	pid_t	id;
-	int		pipes[2]; 
+	t_pipe	main;
+	int		pipes[2];
 	// 0 = read //
 	// 1 = write //
 	int		fd;
 	int		counter;
-	int 	i;
-	
+
 	id = 1;
 	counter = 0;
-	i = 1;
-	
+	main.commands_count = 0;
 	if (argc < 4)
 		clean_error();
-	
 	while (counter < argc - 3 && id != 0)
-	{
-		pipe(pipes);
+	{	
+		main.read_fd = pipes[0];
 		if (id != 0)
+		{
+			pipe(pipes);
+			printf("pipe =%d | main =[%d]\n", pipes[0], pipes[1]);
 			id = fork();
-		i++;
+		}
+		main.commands_count++;
 		counter++;
 	}
 	if (id != 0)
@@ -51,7 +53,12 @@ int	main(int argc, char *argv[], char *envp[])
 		
 	}
 	if (id == 0)
-		commands(envp, argv[i]);
+	{
+		argv++;
+		main.envp = envp;	
+		commands(&main, argv[main.commands_count]);
+		execute(&main, argv, argc, pipes);
+	}
 	// pipe = malloc(1 * sizeof(t_pipe));
 	// if (!pipe)
 	// 	clean_error();
@@ -62,4 +69,3 @@ int	main(int argc, char *argv[], char *envp[])
 	// 	clean_error();
 	// pipe->commands[pipe->commands_count] = NULL;
 }
-kaas

@@ -6,19 +6,28 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:52:57 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/01/20 23:00:08 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/06 13:18:56 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	open_file(int argc, char *argv[])
+int	open_read_file(char *argv[])
 {
-	int	fd_1;
-	int	fd_2;
+	int	fd;
 
-	fd_1 = open(argv[1], O_RDONLY);
-	fd_2 = open(argv[argc - 1], O_WRONLY);
-	if (fd_1 == -1 || fd_2 == - 1)
+	fd = open(argv[0], O_RDONLY);
+	if (fd == -1)
 		clean_error();
+	return (fd);
+}
+
+int	open_write_file(int argc, char *argv[])
+{
+	int	fd;
+
+	fd = open(argv[argc - 2], O_WRONLY);
+	if (fd == -1)
+		clean_error();
+	return (fd);
 }
