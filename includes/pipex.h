@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:44:35 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 15:01:24 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 17:31:07 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_pipe
 	char	**command_arg;
 	int		commands_count;
 	int		read_fd;
+	int		write_fd;
 }	t_pipe;
 
 void	commands(t_pipe *main, char *argument);

@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 12:42:36 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 15:06:00 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 17:34:11 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void	child_execute(t_pipe *main, char *argv[], int argc, int *pipes)
 	if (main->commands_count == 1)
 	{
 		close(pipes[0]);
-		fd = open_read_file(argv);
-		redirect_stdin(fd);
+		redirect_stdin(main->read_fd);
 		redirect_stdout(pipes[1]);
 		execve(main->command_path, main->command_arg, main->envp);
 		clean_error(errno, "execve", NULL);

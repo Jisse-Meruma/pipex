@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 16:52:43 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 17:31:39 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
 	if (id == 0)
 	{
 		argv++;
+		if (main->commands_count == 1)
+			main->read_fd = open_read_file(argv);
 		commands(main, argv[main->commands_count]);
 		child_execute(main, argv, argc, pipes);
 	}

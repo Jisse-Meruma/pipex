@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:52:57 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 14:58:29 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 17:11:56 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	open_write_file(int argc, char *argv[])
 {
 	int	fd;
 
-	fd = open(argv[argc - 2], O_WRONLY | O_TRUNC | O_CREAT, 000641);
+	fd = open(argv[argc - 2], O_WRONLY | O_TRUNC | O_CREAT, 000644);
 	if (fd == -1)
 		clean_error(errno, argv[argc - 2], NULL);
 	return (fd);
