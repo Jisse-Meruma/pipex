@@ -6,66 +6,71 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/06 17:22:28 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 16:52:43 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <sys/wait.h>
 
-void	clean_error(void)
+void	parent_closing(t_pipe *main, int *pipes, int argc)
 {
-	printf("Error\n");
-	exit(-1);
+	if (main->commands_count == argc - 3)
+		close(pipes[0]);
+	close(pipes[1]);
 }
 
-int	main(int argc, char *argv[], char *envp[])
+void	clean_error(int error, char *argument, char *message)
 {
+	write(STDERR_FILENO, "pipex: ", 7);
+	if (error != -1)
+		perror(argument);
+	else
+	{
+		write(STDERR_FILENO, argument, ft_strlen(argument));
+		write(STDERR_FILENO, ": ", 2);
+		write(STDERR_FILENO, message, ft_strlen(message));
+	}
+	exit(error);
+}
+
+void	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
+{	
 	pid_t	id;
-	t_pipe	main;
-	int		pipes[2];
-	// 0 = read //
-	// 1 = write //
-	int		fd;
-	int		counter;
 
 	id = 1;
-	counter = 0;
-	main.commands_count = 0;
-	if (argc < 4)
-		clean_error();
-	while (counter < argc - 3 && id != 0)
+	while (main->commands_count < argc - 3 && id != 0)
 	{	
-		main.read_fd = pipes[0];
+		main->read_fd = pipes[0];
+		if (pipe(pipes) == -1)
+			clean_error(errno, "pipe", NULL);
+		id = fork();
+		if (id == -1)
+			clean_error(errno, "fork", NULL);
 		if (id != 0)
-		{
-			pipe(pipes);
-			printf("pipe =%d | main =[%d]\n", pipes[0], pipes[1]);
-			id = fork();
-		}
-		main.commands_count++;
-		counter++;
-	}
-	if (id != 0)
-	{
-		fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
-			clean_error();
-		
+			parent_closing(main, pipes, argc);
+		main->commands_count++;
 	}
 	if (id == 0)
 	{
 		argv++;
-		main.envp = envp;	
-		commands(&main, argv[main.commands_count]);
-		execute(&main, argv, argc, pipes);
+		commands(main, argv[main->commands_count]);
+		child_execute(main, argv, argc, pipes);
 	}
-	// pipe = malloc(1 * sizeof(t_pipe));
-	// if (!pipe)
-	// 	clean_error();
-	// pipe->envp = envp;
-	// pipe->commands_count = argc - 3;
-	// pipe->commands = malloc(pipe->commands_count * sizeof(char *));
-	// if (!pipe->commands)
-	// 	clean_error();
-	// pipe->commands[pipe->commands_count] = NULL;
+}
+
+int	main(int argc, char *argv[], char *envp[])
+{
+	t_pipe	main;
+	int32_t	status;
+	int		pipes[2];
+
+	main.commands_count = 0;
+	main.envp = envp;
+	if (argc < 4)
+		clean_error(-1, "arguments", "need at least [4]\n");
+	child_birth(&main, argv, argc, pipes);
+	while (wait(NULL) != -1)
+		;
+	exit(WIFEXITED(status));
 }

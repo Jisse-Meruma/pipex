@@ -6,54 +6,57 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/06 12:42:36 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/06 17:28:05 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 15:06:00 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-// read = 0;
-// write = 1;
+
+void	redirect_stdin(int fd)
+{
+	if (dup2(fd, STDIN_FILENO) == -1)
+		clean_error(errno, "dup2", NULL);
+	close(fd);
+}
+
+void	redirect_stdout(int fd)
+{
+	if (dup2(fd, STDOUT_FILENO) == -1)
+		clean_error(errno, "dup2", NULL);
+	close(fd);
+}
 
 void	execute_pipe_command(t_pipe *main, int *pipes)
 {
-	if (dup2(main->read_fd, STDIN_FILENO) == -1)
-		clean_error();
-	close(main->read_fd);
-	if (dup2(pipes[1], STDOUT_FILENO) == -1)
-		clean_error();
-	close(pipes[1]);
+	close(pipes[0]);
+	redirect_stdin(main->read_fd);
+	redirect_stdout(pipes[1]);
 	execve(main->command_path, main->command_arg, main->envp);
+	clean_error(errno, "execve", NULL);
 }
-	
-int	execute(t_pipe *main, char *argv[], int argc, int *pipes)
+
+void	child_execute(t_pipe *main, char *argv[], int argc, int *pipes)
 {
-	int fd;
+	int	fd;
 
 	if (main->commands_count == 1)
 	{
 		close(pipes[0]);
 		fd = open_read_file(argv);
-		if (dup2(fd, STDIN_FILENO) == -1)
-			clean_error();
-		close(fd);
-		if (dup2(pipes[1], STDOUT_FILENO) == -1)
-			clean_error();
-		close(pipes[1]);
+		redirect_stdin(fd);
+		redirect_stdout(pipes[1]);
 		execve(main->command_path, main->command_arg, main->envp);
+		clean_error(errno, "execve", NULL);
 	}
 	if (main->commands_count == argc - 3)
 	{
 		close(pipes[1]);
+		close(pipes[0]);
 		fd = open_write_file(argc, argv);
-		if (dup2(main->read_fd, STDIN_FILENO) == -1)
-			clean_error();
-		close(main->read_fd);
-		if (dup2(fd, STDOUT_FILENO) == -1)
-			clean_error();
-		close(fd);
+		redirect_stdin(main->read_fd);
+		redirect_stdout(fd);
 		execve(main->command_path, main->command_arg, main->envp);
+		clean_error(errno, "execve", NULL);
 	}
-	else
-		execute_pipe_command(main, pipes);
-	return (0);
-}	
+	execute_pipe_command(main, pipes);
+}

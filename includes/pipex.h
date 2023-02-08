@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:44:35 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/06 16:34:08 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/08 15:01:24 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <sys/errno.h>
 
 typedef struct s_pipe
 {
@@ -27,14 +28,14 @@ typedef struct s_pipe
 	int		read_fd;
 }	t_pipe;
 
-void	clean_error(void);
 void	commands(t_pipe *main, char *argument);
+void	clean_error(int error, char *argument, char *message);
 
 // valid_file
-int	open_read_file(char *argv[]);
-int	open_write_file(int argc, char *argv[]);
+int		open_read_file(char *argv[]);
+int		open_write_file(int argc, char *argv[]);
 
 // execute
-int execute(t_pipe *main, char *argv[], int argc, int *pipes);
+void	child_execute(t_pipe *main, char *argv[], int argc, int *pipes);
 
 #endif
