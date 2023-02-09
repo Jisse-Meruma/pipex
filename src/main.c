@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/09 12:16:04 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 16:23:29 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@ void	parent_closing(t_pipe *main, int *pipes, int argc)
 
 void	clean_error(int error, char *argument, char *message)
 {
+	errno = error;
 	write(STDERR_FILENO, "pipex: ", 7);
-	if (error != -1)
+	if (error != -1 && error != 127)
 		perror(argument);
 	else
 	{
@@ -34,7 +35,22 @@ void	clean_error(int error, char *argument, char *message)
 	exit(error);
 }
 
-void	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
+void	child_process(t_pipe *main, char *argv[], int argc, int *pipes)
+{
+	argv++;
+	if (main->commands_count == 1 && main->here_doc == 0)
+	{
+		main->read_fd = open_read_file(argv);
+	}
+	else if (main->commands_count == 2 && main->here_doc == 1)
+	{
+		main->read_fd = here_doc(argv);
+	}
+	commands(main, argv[main->commands_count]);
+	child_execute(main, argv, argc, pipes);
+}
+
+int	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
 {	
 	pid_t	id;
 
@@ -53,19 +69,15 @@ void	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
 	}
 	if (id == 0)
 	{
-		argv++;
-		if (main->commands_count == 1 && main->here_doc == 0)
-			main->read_fd = open_read_file(argv);
-		else if (main->commands_count == 2 && main->here_doc == 1)
-			main->read_fd = here_doc(argv);
-		commands(main, argv[main->commands_count]);
-		child_execute(main, argv, argc, pipes);
+		child_process(main, argv, argc, pipes);
 	}
+	return (id);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipe	main;
+	int		id;
 	int32_t	status;
 	int		pipes[2];
 
@@ -79,8 +91,11 @@ int	main(int argc, char *argv[], char *envp[])
 		main.commands_count = 1;
 		main.here_doc = 1;
 	}
-	child_birth(&main, argv, argc, pipes);
+	id = child_birth(&main, argv, argc, pipes);
+	waitpid(id, &status, 0);
 	while (wait(NULL) != -1)
 		;
-	exit(WIFEXITED(status));
+	if (!WIFEXITED(status))
+		exit(EXIT_FAILURE);
+	exit(WEXITSTATUS(status));
 }

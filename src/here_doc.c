@@ -6,11 +6,22 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 11:05:11 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/09 13:17:31 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 16:23:33 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int	here_doc_readonly(int fd)
+{
+	close(fd);
+	fd = open("/tmp/here_doc", O_RDONLY);
+	if (fd == -1)
+		clean_error(errno, "here_doc", NULL);
+	if (unlink("/tmp/here_doc") == -1)
+		clean_error(errno, "here_doc", NULL);
+	return (fd);
+}
 
 int	here_doc(char *argv[])
 {
@@ -33,10 +44,6 @@ int	here_doc(char *argv[])
 		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
-	fd = open("here_doc", O_RDONLY);
-	if (fd == -1)
-		clean_error(errno, "here_doc", NULL);
-	if (unlink("here_doc") == -1)
-		clean_error(errno, "here_doc", NULL);
+	fd = here_doc_readonly(fd);
 	return (fd);
 }

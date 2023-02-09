@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:52:57 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/09 13:45:49 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 16:01:16 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int	open_here_doc(void)
 {
 	int	fd;
 
-	fd = open("here_doc", O_WRONLY | O_RDONLY | O_CREAT, 0000644);
+	fd = open("/tmp/here_doc", O_WRONLY | O_RDONLY | O_CREAT, 0000644);
 	if (fd == -1)
-		clean_error(errno, "here_doc", NULL);
+		clean_error(errno, "/tmp/here_doc", NULL);
 	return (fd);
 }

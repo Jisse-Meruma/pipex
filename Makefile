@@ -11,7 +11,7 @@ OBJ_DIR		:=	./obj
 SRC_DIR 	:=	./src
 
 ### UTILS #####################################################
-CFLAGS	:=	-Wall -Wextra
+CFLAGS	:=	-Wall -Wextra -Werror
 RM		:=	rm -rf
 
 SRC 	:=	main.c			\

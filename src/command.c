@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 22:43:22 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 17:23:16 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 14:43:07 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	valid_command(t_pipe *main, char *path, char *argument)
 		{
 			ft_2dfree(paths);
 			ft_2dfree(main->command_arg);
-			clean_error(-1, argument, "command not found\n");
+			clean_error(127, argument, "command not found\n");
 		}
 	}
 }
