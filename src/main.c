@@ -6,17 +6,16 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/09 16:23:29 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 18:10:11 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #include <sys/wait.h>
 
-void	parent_closing(t_pipe *main, int *pipes, int argc)
+void	parent_closing(t_pipe *main, int *pipes)
 {
-	if (main->commands_count == argc - 3)
-		close(pipes[0]);
+	close(main->read_fd);
 	close(pipes[1]);
 }
 
@@ -64,13 +63,14 @@ int	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
 		if (id == -1)
 			clean_error(errno, "fork", NULL);
 		if (id != 0)
-			parent_closing(main, pipes, argc);
+			parent_closing(main, pipes);
 		main->commands_count++;
 	}
 	if (id == 0)
 	{
 		child_process(main, argv, argc, pipes);
 	}
+	close(pipes[0]);
 	return (id);
 }
 
@@ -84,7 +84,7 @@ int	main(int argc, char *argv[], char *envp[])
 	main.commands_count = 0;
 	main.here_doc = 0;
 	main.envp = envp;
-	if (argc < 4)
+	if (argc < 5)
 		clean_error(-1, "arguments", "need at least [4]\n");
 	if (!ft_strncmp(argv[1], "here_doc", 8) && ft_strlen(argv[1]) == 8)
 	{
