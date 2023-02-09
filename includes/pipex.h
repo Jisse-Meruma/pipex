@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:44:35 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 17:31:07 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 13:14:29 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,26 @@ typedef struct s_pipe
 	char	*command_path;
 	char	**command_arg;
 	int		commands_count;
+	int		here_doc;
 	int		read_fd;
 	int		write_fd;
 }	t_pipe;
 
+//	command
 void	commands(t_pipe *main, char *argument);
+
+//	main
 void	clean_error(int error, char *argument, char *message);
 
-// valid_file
+//	valid_file
 int		open_read_file(char *argv[]);
-int		open_write_file(int argc, char *argv[]);
+int		open_write_file(t_pipe *main, int argc, char *argv[]);
+int		open_here_doc(void);
 
-// execute
+//	execute
 void	child_execute(t_pipe *main, char *argv[], int argc, int *pipes);
+
+//	here_doc
+int		here_doc(char *argv[]);
 
 #endif

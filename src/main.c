@@ -6,7 +6,7 @@
 /*   By: jmeruma <jmeruma@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 20:43:48 by jmeruma           #+#    #+#             */
-/*   Updated: 2023/02/08 17:31:39 by jmeruma          ###   ########.fr       */
+/*   Updated: 2023/02/09 12:16:04 by jmeruma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,10 @@ void	child_birth(t_pipe *main, char *argv[], int argc, int *pipes)
 	if (id == 0)
 	{
 		argv++;
-		if (main->commands_count == 1)
+		if (main->commands_count == 1 && main->here_doc == 0)
 			main->read_fd = open_read_file(argv);
+		else if (main->commands_count == 2 && main->here_doc == 1)
+			main->read_fd = here_doc(argv);
 		commands(main, argv[main->commands_count]);
 		child_execute(main, argv, argc, pipes);
 	}
@@ -68,9 +70,15 @@ int	main(int argc, char *argv[], char *envp[])
 	int		pipes[2];
 
 	main.commands_count = 0;
+	main.here_doc = 0;
 	main.envp = envp;
 	if (argc < 4)
 		clean_error(-1, "arguments", "need at least [4]\n");
+	if (!ft_strncmp(argv[1], "here_doc", 8) && ft_strlen(argv[1]) == 8)
+	{
+		main.commands_count = 1;
+		main.here_doc = 1;
+	}
 	child_birth(&main, argv, argc, pipes);
 	while (wait(NULL) != -1)
 		;

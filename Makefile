@@ -18,6 +18,7 @@ SRC 	:=	main.c			\
 			valid_file.c    \
 			command.c		\
 			execute.c		\
+			here_doc.c
 
 OBJ		:=	$(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
 SRC		:=	$(addprefix $(SRC_DIR)/,$(SRC))
